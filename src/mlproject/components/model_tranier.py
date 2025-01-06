@@ -16,7 +16,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
-from xgboost import XGBRegressor
+#from xgboost import XGBRegressor
 
 from src.mlproject.exception import CustomException
 from src.mlproject.logger import logging
@@ -51,7 +51,7 @@ class ModelTrainer:
                 "Decision Tree": DecisionTreeRegressor(),
                 "Gradient Boosting": GradientBoostingRegressor(),
                 "Linear Regression": LinearRegression(),
-                "XGBRegressor": XGBRegressor(),
+                #"XGBRegressor": XGBRegressor(),
                 "CatBoosting Regressor": CatBoostRegressor(verbose=False),
                 "AdaBoost Regressor": AdaBoostRegressor(),
             }
@@ -76,10 +76,10 @@ class ModelTrainer:
                     'n_estimators': [8,16,32,64,128,256]
                 },
                 "Linear Regression":{},
-                "XGBRegressor":{
-                    'learning_rate':[.1,.01,.05,.001],
-                    'n_estimators': [8,16,32,64,128,256]
-                },
+                # "XGBRegressor":{
+                #     'learning_rate':[.1,.01,.05,.001],
+                #     'n_estimators': [8,16,32,64,128,256]
+                # },
                 "CatBoosting Regressor":{
                     'depth': [6,8,10],
                     'learning_rate': [0.01, 0.05, 0.1],
@@ -104,47 +104,47 @@ class ModelTrainer:
             ]
             best_model = models[best_model_name]
 
-            print("This is the best model:")
-            print(best_model_name)
+            # print("This is the best model:")
+            # print(best_model_name)
 
-            model_names = list(params.keys())
+            # model_names = list(params.keys())
 
-            actual_model=""
+            # actual_model=""
 
-            for model in model_names:
-                if best_model_name == model:
-                    actual_model = actual_model + model
+            # for model in model_names:
+            #     if best_model_name == model:
+            #         actual_model = actual_model + model
 
-            best_params = params[actual_model]
+            # best_params = params[actual_model]
 
-            mlflow.set_registry_uri("https://dagshub.com/polashds/mlproject.mlflow")
-            tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+            # mlflow.set_registry_uri("https://dagshub.com/polashds/mlproject.mlflow")
+            # tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
 
-            # mlflow
+            # # mlflow
 
-            with mlflow.start_run():
+            # with mlflow.start_run():
 
-                predicted_qualities = best_model.predict(X_test)
+            #     predicted_qualities = best_model.predict(X_test)
 
-                (rmse, mae, r2) = self.eval_metrics(y_test, predicted_qualities)
+            #     (rmse, mae, r2) = self.eval_metrics(y_test, predicted_qualities)
 
-                mlflow.log_params(best_params)
+            #     mlflow.log_params(best_params)
 
-                mlflow.log_metric("rmse", rmse)
-                mlflow.log_metric("r2", r2)
-                mlflow.log_metric("mae", mae)
+            #     mlflow.log_metric("rmse", rmse)
+            #     mlflow.log_metric("r2", r2)
+            #     mlflow.log_metric("mae", mae)
 
 
-                # Model registry does not work with file store
-                if tracking_url_type_store != "file":
+            #     # Model registry does not work with file store
+            #     if tracking_url_type_store != "file":
 
-                    # Register the model
-                    # There are other ways to use the Model Registry, which depends on the use case,
-                    # please refer to the doc for more information:
-                    # https://mlflow.org/docs/latest/model-registry.html#api-workflow
-                    mlflow.sklearn.log_model(best_model, "model", registered_model_name=actual_model)
-                else:
-                    mlflow.sklearn.log_model(best_model, "model")
+            #         # Register the model
+            #         # There are other ways to use the Model Registry, which depends on the use case,
+            #         # please refer to the doc for more information:
+            #         # https://mlflow.org/docs/latest/model-registry.html#api-workflow
+            #         mlflow.sklearn.log_model(best_model, "model", registered_model_name=actual_model)
+            #     else:
+            #         mlflow.sklearn.log_model(best_model, "model")
 
 
 
